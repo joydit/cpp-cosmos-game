@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Server" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Win_Shared">
+				<Option output="bin/server" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./bin" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-w" />
+				</Compiler>
+				<Linker>
+					<Add library="sfml-audio" />
+					<Add library="sfml-graphics" />
+					<Add library="sfml-network" />
+					<Add library="sfml-window" />
+					<Add library="sfml-system" />
+				</Linker>
+			</Target>
+			<Target title="Win_Static">
+				<Option output="bin/server" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./bin" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DSFML_STATIC" />
+					<Add option="-DGLEW_STATIC" />
+					<Add option="-DUNICODE" />
+					<Add directory="../../sfml/extlibs/headers" />
+				</Compiler>
+				<Linker>
+					<Add library="sfml-audio-s" />
+					<Add library="sfml-graphics-s" />
+					<Add library="sfml-network-s" />
+					<Add library="sfml-window-s" />
+					<Add library="sfml-system-s" />
+					<Add library="sndfile" />
+					<Add library="openal32" />
+					<Add library="jpeg" />
+					<Add library="glew32" />
+					<Add library="freetype" />
+					<Add library="ws2_32" />
+					<Add library="gdi32" />
+					<Add library="opengl32" />
+					<Add library="winmm" />
+					<Add directory="../../sfml/extlibs/libs-mingw/x64" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++11" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-fexceptions" />
+			<Add option="-DSERVER" />
+			<Add directory="../../include" />
+			<Add directory="../ExtLibs" />
+			<Add directory="../Shared/" />
+			<Add directory="../ExtLibs/cpp-feather-ini-parser" />
+			<Add directory="../ExtLibs/cpp-event-system" />
+		</Compiler>
+		<Linker>
+			<Add directory="../../lib/sfml/x86" />
+		</Linker>
+		<Unit filename="../BaseClient.cpp" />
+		<Unit filename="../BaseClient.h" />
+		<Unit filename="../BaseClients.cpp" />
+		<Unit filename="../BaseClients.h" />
+		<Unit filename="../BaseConfig.cpp" />
+		<Unit filename="../BaseConfig.h" />
+		<Unit filename="../BaseEngine.cpp" />
+		<Unit filename="../BaseEngine.h" />
+		<Unit filename="../BaseMessages.cpp" />
+		<Unit filename="../BaseMessages.h" />
+		<Unit filename="../BaseNetwork.cpp" />
+		<Unit filename="../BaseNetwork.h" />
+		<Unit filename="../BaseObject.cpp" />
+		<Unit filename="../BaseObject.h" />
+		<Unit filename="../BasePlayer.cpp" />
+		<Unit filename="../BasePlayer.h" />
+		<Unit filename="../BasePlayers.cpp" />
+		<Unit filename="../BasePlayers.h" />
+		<Unit filename="../Command.cpp" />
+		<Unit filename="../Command.h" />
+		<Unit filename="../Commands.cpp" />
+		<Unit filename="../Commands.h" />
+		<Unit filename="../Console.cpp" />
+		<Unit filename="../Console.h" />
+		<Unit filename="../Error.cpp" />
+		<Unit filename="../Error.h" />
+		<Unit filename="../ExtLibs/Function.h" />
+		<Unit filename="../ExtLibs/PlaceableVector.h" />
+		<Unit filename="../ExtLibs/Singleton.h" />
+		<Unit filename="../ExtLibs/cpp-event-system/BaseEvent.cpp" />
+		<Unit filename="../ExtLibs/cpp-event-system/BaseEvent.h" />
+		<Unit filename="../ExtLibs/cpp-event-system/BaseEvents.h" />
+		<Unit filename="../ExtLibs/cpp-event-system/Event.h" />
+		<Unit filename="../ExtLibs/cpp-feather-ini-parser/INI.h" />
+		<Unit filename="../Global.h" />
+		<Unit filename="../Shared/Client.h" />
+		<Unit filename="../Shared/Clients.h" />
+		<Unit filename="../Shared/Config.h" />
+		<Unit filename="../Shared/Engine.h" />
+		<Unit filename="../Shared/Events.h" />
+		<Unit filename="../Shared/Messages.h" />
+		<Unit filename="../Shared/Network.h" />
+		<Unit filename="../Shared/Player.h" />
+		<Unit filename="../Shared/Players.h" />
+		<Unit filename="Client.cpp" />
+		<Unit filename="Client.h" />
+		<Unit filename="Clients.cpp" />
+		<Unit filename="Clients.h" />
+		<Unit filename="Config.cpp" />
+		<Unit filename="Config.h" />
+		<Unit filename="Engine.cpp" />
+		<Unit filename="Engine.h" />
+		<Unit filename="Events.h" />
+		<Unit filename="Messages.cpp" />
+		<Unit filename="Messages.h" />
+		<Unit filename="Network.cpp" />
+		<Unit filename="Network.h" />
+		<Unit filename="Player.cpp" />
+		<Unit filename="Player.h" />
+		<Unit filename="Players.cpp" />
+		<Unit filename="Players.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
