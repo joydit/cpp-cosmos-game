@@ -20,6 +20,7 @@ void Messages::load()
    sendable.add("INITIAL_RESPOND", Server::INITIAL_RESPOND, 0);
    sendable.add("INITIALISE", Server::INITIALISE, 0);
    sendable.add("UDP_CHECK", Server::UDP_CHECK, 0);
+   sendable.add("DISCONNECT_DIALOGUE", Server::DISCONNECT_DIALOGUE, 0);
 
    receivable.add("INITIAL", Client::INITIAL, ::Client::RecInitial, 4);
    receivable.add("INITIALISE", Client::INITIALISE, ::Client::RecInitialise, 2);

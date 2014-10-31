@@ -8,8 +8,15 @@
 
 #include <chrono>
 #include <thread>
+#include <string>
 
 inline void sleep(int ms)
 {
    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+inline std::string stringPadding(std::string str, size_t lengthMax)
+{
+   str.resize(lengthMax, ' ');
+   return str;
 }

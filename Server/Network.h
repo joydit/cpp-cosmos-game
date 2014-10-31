@@ -5,8 +5,12 @@
 #include "../BaseNetwork.h"
 #include "Client.h"
 
+class Clients;
+
 class Network: public BaseNetwork, public Singleton<Network>
 {
+   friend class Clients;
+
 public:
    typedef sf::TcpListener tcp_listener_t;
    typedef sf::SocketSelector selector_t;
@@ -22,18 +26,18 @@ public:
    int getOnlineCount();
 
 private:
-   std::thread thread; //Combine
+   std::thread threadTcp, threadUdp; //Combine
    volatile bool running;
    tcp_listener_t listener;
    selector_t selector; //Combine in own class with thread (ThreadedSelector)
 
-   void updateThread(selector_t& selector);
+   void updateThreadTcp(selector_t& selector);
+   void updateThreadUdp();
    void updateSocketSelector(sf::SocketSelector& selector);
 
    void handleClientConnect();
-   void handleClientDisconnect(Client& client);
-   void handleClientUpdate();
-   void handleClientReceive(Client& client);
+   void handleClientUpdateTcp();
+   void handleClientReceiveTcp(Client& client);
 
    bool canSocketConnect(sf::TcpSocket& socket);
    bool canClientConnect(Client& client);

@@ -2,7 +2,6 @@
 #include <Engine.h>
 #include "Clients.h"
 #include "Client.h"
-#include "Network.h"
 #include "Players.h"
 
 using namespace std;
@@ -15,16 +14,20 @@ Clients::Clients(): clientIdCount(1), authDistribution(1, std::numeric_limits<Cl
 
 Clients::~Clients()
 {
-   kickAll();
+   for (Client* client: getAll())
+      delete client;
 }
 
 Client* Clients::findById(BaseClient::id_t clientId)
 {
-   find_if(all.begin(), all.end(), [clientId](Client*& client) {
+   clients_t::iterator it = find_if(all.begin(), all.end(), [clientId](Client*& client) {
       return client->getId() == clientId;
    });
 
-   return NULL;
+   if (it == all.end())
+      return NULL;
+
+   return *it;
 }
 
 Client* Clients::findByUniqueId(BasePlayer::unique_id_t uniqueId)
@@ -38,18 +41,63 @@ Client* Clients::findByUniqueId(BasePlayer::unique_id_t uniqueId)
 
 Client* Clients::findByUsername(string username)
 {
-   find_if(all.begin(), all.end(), [username](Client*& client) {
+   clients_t::iterator it = find_if(all.begin(), all.end(), [username](Client*& client) {
       return client->getUsername() == username;
    });
+
+   if (it == all.end())
+      return NULL;
+
+   return *it;
+}
+
+Client* Clients::findByFilter(filter_t filter, string identifier)
+{
+   if (filter == FILTER_USERNAME)
+      return findByUsername(identifier);
+
+   stringstream ss;
+   Player::unique_id_t id;
+
+   ss << identifier;
+   ss >> id;
+
+   switch(filter)
+   {
+   case FILTER_ID:
+      return findById(id);
+
+   case FILTER_UNIQUE_ID:
+      return findByUniqueId(id);
+   }
 
    return NULL;
 }
 
-void Clients::kickAll()
+Client* Clients::findByString(std::string filter, std::string identifier)
 {
+   if (filter == "cid" || filter == "clientid")
+      return findByFilter(FILTER_ID, identifier);
+
+   if (filter == "uid" || filter == "uniqueid")
+      return findByFilter(FILTER_UNIQUE_ID, identifier);
+
+   if (filter == "uname" || filter == "username")
+      return findByFilter(FILTER_USERNAME, identifier);
+
+   Console::PrintError("Invalid filter '%s'", filter.c_str());
+   return NULL;
+}
+
+void Clients::disconnectAll(std::string reason)
+{
+   sf::Packet packet = Messages::Get().create(Messages::Server::DISCONNECT_DIALOGUE);
+   packet << reason;
+
    for (Client* client: getAll())
    {
-      client->kick();
+      client->getSocket().send(packet);
+      client->disconnect();
    }
 }
 
@@ -74,12 +122,12 @@ BaseClient::id_t Clients::genId()
 
 void Clients::handleConnect(Client* client)
 {
-   GetEngine().clients.add(client);
-   client->handleConnect();
+   Network::Get().selector.add(client->getSocket());
+   add(client);
 }
 
 void Clients::handleDisconnect(Client* client)
 {
-   GetEngine().clients.remove(client);
-   client->handleDisconnect();
+   remove(client);
+   Network::Get().selector.remove(client->getSocket());
 }

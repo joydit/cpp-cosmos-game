@@ -4,9 +4,12 @@
 #include "BasePlayer.h"
 
 class Client;
+class Network;
 
 class BaseClients
 {
+   friend class Network;
+
 public:
    typedef std::list<Client*> clients_t;
 
@@ -21,5 +24,6 @@ protected:
 
    void add(Client* client);
    void remove(Client* client);
-   void cleanup();
+
+   void handleCleanup();
 };

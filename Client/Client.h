@@ -9,6 +9,7 @@ public:
    static void RecInitialRespond(Client& client, sf::Packet packet);
    static void RecInitialise(Client& client, sf::Packet packet);
    static void RecUdpCheck(Client& client, sf::Packet packet);
+   static void RecDialogue(Client& client, sf::Packet packet);
 
    Client();
    ~Client();

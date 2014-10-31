@@ -28,6 +28,14 @@ void Client::RecUdpCheck(Client& client, sf::Packet packet)
    }
 }
 
+void Client::RecDialogue(Client& client, sf::Packet packet)
+{
+   string msg;
+   packet >> msg;
+
+   Console::PrintInfo(msg);
+}
+
 Client::Client(): BaseClient(new sf::TcpSocket, 0, 0, "")
 {
 

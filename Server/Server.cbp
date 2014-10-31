@@ -60,6 +60,7 @@
 			<Add option="-pipe" />
 			<Add option="-fexceptions" />
 			<Add option="-DSERVER" />
+			<Add option="-DDEBUG" />
 			<Add directory="../../include" />
 			<Add directory="../ExtLibs" />
 			<Add directory="../Shared/" />

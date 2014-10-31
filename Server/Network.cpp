@@ -29,7 +29,8 @@ void Network::startThread()
    if (!running)
    {
       running = true;
-      thread = std::thread(&Network::updateThread, this, ref(selector));
+      threadTcp = std::thread(&Network::updateThreadTcp, this, ref(selector));
+      threadUdp = std::thread(&Network::updateThreadUdp, this);
    }
 }
 
@@ -37,8 +38,11 @@ void Network::stopThread()
 {
    if (running)
    {
-      running = false; //Will terminate thread when safe
-      thread.join(); //Wait until this thread has terminated
+      Clients::Get().disconnectAll("Server was shut down.");
+
+      running = false;
+      threadTcp.join();
+      threadUdp.join();
 
       Console::PrintInfo("Network Thread Stopped Gracefully.");
    }
@@ -70,23 +74,21 @@ bool Network::listen(port_t portTcp)
 
 int Network::getOnlineCount()
 {
-   return GetEngine().clients.getCount();
+   return Clients::Get().getCount();
 }
 
 ///Private
-void Network::updateThread(selector_t& selector)
+void Network::updateThreadTcp(selector_t& selector)
 {
-   sf::Time selectorWaitTime = sf::milliseconds(Config::Get().settings.get("network", "selectorWaitMs", 1000));
+   sf::Time receiveWaitSelectorMs = sf::milliseconds(Config::Get().settings.get("network", "receiveWaitSelectorMs", 1000));
 
    //Make the selector wait for data on any socket
    while (running)
    {
-      if (selector.wait(selectorWaitTime))
+      if (selector.wait(receiveWaitSelectorMs))
       {
          if (Engine::mtxGame.try_lock())
          {
-            GetEngine().clients.cleanup();
-
             //Test the listener
             if (selector.isReady(listener))
             {
@@ -94,11 +96,37 @@ void Network::updateThread(selector_t& selector)
             }
             else
             {
-               handleClientUpdate();
+               handleClientUpdateTcp();
             }
+
+            Clients::Get().handleCleanup();
 
             Engine::mtxGame.unlock();
          }
+      }
+   }
+}
+
+void Network::updateThreadUdp()
+{
+   sf::Time receiveBlockUdpMs = sf::milliseconds(Config::Get().settings.get("network", "receiveBlockUdpMs", 1000));
+   char buffer[1024];
+   std::size_t received = 0;
+   sf::IpAddress sender;
+   unsigned short port;
+   sf::UdpSocket socket;
+
+   socket.bind(getPortUdp());
+
+   while (running)
+   {
+      sleep(receiveBlockUdpMs);
+
+      if (socket.receive(buffer, sizeof(buffer), received, sender, port) == sf::Socket::Done) ///Temporary - Verify client auth here aswell
+      {
+         Engine::mtxGame.lock();
+         //handleClientReceivePacket(client, packet);
+         Engine::mtxGame.unlock();
       }
    }
 }
@@ -109,16 +137,12 @@ void Network::handleClientConnect()
    sf::TcpSocket* ptr_socket = new sf::TcpSocket;
    if (listener.accept(*ptr_socket) == sf::Socket::Done)
    {
-      sf::TcpSocket& socket = *ptr_socket;
-
-      if (canSocketConnect(socket))
+      if (canSocketConnect(*ptr_socket))
       {
          //Add the new client to the clients list
-         Client* client = new Client(ptr_socket, "NoName");
+         Client* client = new Client(ptr_socket);
 
-         selector.add(socket); // Add the new client to the selector so that we will be notified when he sends something
-
-         GetEngine().clients.handleConnect(client);
+         client->handleConnect();
       }
    }
    else
@@ -130,22 +154,17 @@ void Network::handleClientConnect()
    }
 }
 
-void Network::handleClientDisconnect(Client& client)
-{
-   GetEngine().clients.handleDisconnect(&client);
-}
-
-void Network::handleClientUpdate()
+void Network::handleClientUpdateTcp()
 {
    //The listener socket is not ready, test all other sockets (the clients)
-   for(Client*& client: GetEngine().clients.getAll())
+   for(Client*& client: Clients::Get().getAll())
    {
       //Check if disconnected here, if so, remove
-      handleClientReceive(*client);
+      handleClientReceiveTcp(*client);
    }
 }
 
-void Network::handleClientReceive(Client& client)
+void Network::handleClientReceiveTcp(Client& client)
 {
    auto& socket = client.getSocket();
    if (selector.isReady(socket))
@@ -159,15 +178,12 @@ void Network::handleClientReceive(Client& client)
          break;
 
       case sf::Socket::Disconnected:
-         handleClientDisconnect(client); //Remove from list and free
+         client.disconnect(); //Remove from list and free
          break;
 
       case sf::Socket::Error:
          Console::PrintError("Socket error.");
          break;
-
-      case sf::Socket::NotReady:
-        break;
       }
    }
 }

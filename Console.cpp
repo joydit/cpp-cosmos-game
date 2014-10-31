@@ -15,7 +15,7 @@ va_list args;
 void Console::Print(string message, ...)
 {
    va_start(args, 0);
-   Get().printFormat(STREAM_INFO, message, args);
+   Get().printFormat(STREAM_DEFAULT, message, args);
    va_end(args);
 }
 
@@ -40,7 +40,7 @@ void Console::PrintInfo(string message, ...)
    va_end(args);
 }
 
-Console::Console(): running(false), streams{{cout, "", LOG_COUT}, {cout, "Info: ", LOG_COUT}, {cerr, "Error: ", LOG_ERROR}, {clog, "Log: ", LOG_LOG}}
+Console::Console(): running(false), streams{{cout, "", LOG_COUT}, {cerr, "Error: ", LOG_ERROR}, {clog, "Log: ", LOG_LOG}, {cout, "Info: ", LOG_COUT}}
 {
    logDatas[LOG_COUT] = new LogData("out", false);
    logDatas[LOG_LOG] = new LogData("log", false);
@@ -49,7 +49,7 @@ Console::Console(): running(false), streams{{cout, "", LOG_COUT}, {cout, "Info: 
 
 Console::~Console()
 {
-   //Print log end info and close
+   //Write log closure info
    chrono::time_point<chrono::system_clock> end;
    end = chrono::system_clock::now();
    time_t end_time = chrono::system_clock::to_time_t(end);

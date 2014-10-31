@@ -60,6 +60,11 @@ void BaseClient::init()
 
 }
 
+void BaseClient::disconnect()
+{
+   handleDisconnect();
+}
+
 void BaseClient::handleConnect()
 {
 

@@ -32,11 +32,19 @@ Player* BasePlayers::findByName(BasePlayer::name_t name, filter_e filter)
 template <typename T>
    Player* BasePlayers::find(std::function<bool(Player*&)> funct, T compare, filter_e filter)
 {
+   players_t::iterator it;
+
    if (filter == FILTER_ONLINE || filter == FILTER_BOTH)
-      find_if(online.begin(), online.end(), funct);
+      it = find_if(online.begin(), online.end(), funct);
+
+   if (it == online.end())
+      return NULL;
 
    if (filter == FILTER_OFFLINE || filter == FILTER_BOTH)
-      find_if(offline.begin(), offline.end(), funct);
+      it = find_if(offline.begin(), offline.end(), funct);
 
-   return NULL;
+   if (it == offline.end())
+      return NULL;
+
+   return *it;
 }

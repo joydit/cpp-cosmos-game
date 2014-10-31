@@ -14,9 +14,6 @@ class BaseNetwork
 public:
    typedef uint16_t port_t;
 
-   static const port_t PORT_TCP_DEFAULT = 2500;
-   static const port_t PORT_UDP_DEFAULT = 2600;
-
    Messages messages;
 
    BaseNetwork();

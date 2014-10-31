@@ -25,6 +25,7 @@ public:
    virtual bool verifyAuth(id_t clientId, auth_id_t authId);
 
    virtual void init();
+   virtual void disconnect();
    virtual void handleConnect();
    virtual void handleDisconnect();
 

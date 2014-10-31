@@ -4,24 +4,27 @@
 
 #pragma once
 
+#include <Singleton.h>
 #include "../BaseClients.h"
 #include "../BaseClient.h"
 
 class Client;
-class Network;
 
-class Clients: public BaseClients
+class Clients: public BaseClients, public Singleton<Clients>
 {
    friend class Client;
-   friend class Network;
 
 public:
+   enum filter_t { FILTER_ID, FILTER_UNIQUE_ID, FILTER_USERNAME };
+
    Clients();
    ~Clients();
    Client* findById(BaseClient::id_t clientId);
    Client* findByUniqueId(BasePlayer::unique_id_t uniqueId);
    Client* findByUsername(std::string username);
-   void kickAll();
+   Client* findByFilter(filter_t filter, std::string identifier);
+   Client* findByString(std::string filter, std::string identifier);
+   void disconnectAll(std::string reason);
 
 protected:
    BaseClient::id_t clientIdCount;

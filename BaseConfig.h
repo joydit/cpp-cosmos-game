@@ -7,7 +7,7 @@
 #include <Singleton.h>
 #include <INI.h>
 
-class BaseConfig: public Singleton<BaseConfig>
+class BaseConfig
 {
 public:
    typedef INI<> console_t;

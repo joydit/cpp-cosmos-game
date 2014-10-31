@@ -17,7 +17,7 @@ Network::~Network()
 
 bool Network::connect(sf::IpAddress address, port_t port)
 {
-   setServerAddress((address == "")? getLocalAddress(): address);
+   setServerAddress((address == "")? Config::Get().settings.get("network", "address", getLocalAddress()): address);
    setPortTcp((port == 0)? getPortTcp(): port);
 
    if (GetEngine().client.getSocket().connect(getServerAddress(), getPortTcp()) != sf::Socket::Done)
@@ -45,7 +45,7 @@ bool Network::update()
       return false;
 
    case sf::Socket::Error:
-      Console::PrintError("Socket error.");
+      Console::PrintError("Lost connection to server.");
       break;
    }
 

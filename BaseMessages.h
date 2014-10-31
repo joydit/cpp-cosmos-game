@@ -29,7 +29,7 @@ public:
 
    struct Server
    {
-      enum msg_e { RESERVED, INITIAL_RESPOND, INITIALISE, UDP_CHECK };
+      enum msg_e { RESERVED, INITIAL_RESPOND, INITIALISE, UDP_CHECK, DISCONNECT_DIALOGUE };
    };
 
    struct Client

@@ -42,7 +42,7 @@ void BaseClients::remove(Client* client)
    removed.push_back(client);
 }
 
-void BaseClients::cleanup()
+void BaseClients::handleCleanup()
 {
    for (Client*& client: removed)
    {

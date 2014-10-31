@@ -28,25 +28,25 @@ void Client::RecInitialise(Client& client, sf::Packet packet)
 
 void Client::SendInitialRespond(Client& client)
 {
-   sf::Packet packet = GetEngine().network.messages.create(Messages::Server::INITIAL_RESPOND);
+   sf::Packet packet = Network::Get().messages.create(Messages::Server::INITIAL_RESPOND);
    packet << (int8_t)1; //Accepted (unfinished)
    client.getSocket().send(packet);
 
    ///Temporary - Use udp
-   /*packet = GetEngine().network.messages.create(Messages::Server::UDP_CHECK);
+   /*packet = Network::Get().messages.create(Messages::Server::UDP_CHECK);
    client.getSocket().send(packet);*/
 }
 
 void Client::SendInitialise(Client& client)
 {
-   sf::Packet packet = GetEngine().network.messages.create(Messages::Server::INITIALISE);
-   GetEngine().network.messages.packInitialise(packet);
+   sf::Packet packet = Network::Get().messages.create(Messages::Server::INITIALISE);
+   Network::Get().messages.packInitialise(packet);
    client.getSocket().send(packet);
 }
 
-Client::Client(sf::TcpSocket* socketTcp, username_t username): BaseClient(socketTcp, 0, 0, username)
+Client::Client(sf::TcpSocket* socketTcp): BaseClient(socketTcp, 0, 0, "Pending"), state(STATE_UNINITIALISED)
 {
-   cout << "Auth id: " << getAuthId() << endl; ///Temporary
+
 }
 
 Client::~Client()
@@ -69,10 +69,14 @@ string Client::getIpAddress()
    return getSocket().getRemoteAddress().toString();
 }
 
-void Client::kick()
+void Client::kick(string reason)
 {
-   getSocket().disconnect();
-   GetEngine().clients.handleDisconnect(this);
+   if (reason != "")
+      reason = "You have been kicked for '" + reason + "'";
+   else
+      reason = "You have been kicked from the server.";
+
+   disconnect(reason);
 }
 
 bool Client::verifyAuth(id_t clientId, auth_id_t authId)
@@ -80,35 +84,66 @@ bool Client::verifyAuth(id_t clientId, auth_id_t authId)
    return BaseClient::verifyAuth(clientId, authId);
 }
 
-void Client::init()
-{
-
-}
-
 void Client::handleConnect()
 {
-   Console::PrintInfo("Client Connected - Address: %s CID: #%u Count: %u\n", getIpAddress().c_str(), getId(), GetEngine().network.getOnlineCount());
+   Console::PrintInfo("Client Connected - Address: %s CID: #%u Count: %u\n", getIpAddress().c_str(), getId(), Network::Get().getOnlineCount());
+
+   Clients::Get().handleConnect(this);
 }
 
 void Client::handleDisconnect()
 {
+   getSocket().disconnect();
+   Clients::Get().handleDisconnect(this);
+
    Console::PrintInfo("Client Disconnected.");
 }
 
+void Client::disconnect(string msg)
+{
+   sendDisconnectMessage(msg);
+
+   BaseClient::disconnect();
+}
+
+void Client::disconnect()
+{
+   BaseClient::disconnect();
+}
+
+void Client::sendInitial()
+{
+   ///Temporary - Complete
+}
+
+void Client::sendDisconnectMessage(string msg)
+{
+   sf::Packet packet = Messages::Get().create(Messages::Server::DISCONNECT_DIALOGUE);
+   packet << msg;
+   getSocket().send(packet);
+}
+
 ///Protected
-void Client::init(string name, string pass)
+void Client::init()
 {
-   setPlayer(new Player(this, name));
+   setPlayer(new Player(this, getUsername()));
 }
 
-void Client::validate(string name, string pass)
+void Client::validate(string username, string password)
 {
 
 }
 
-void Client::finalise(bool valid)
+void Client::validateRespond(bool valid)
 {
+   validatePassword = "";
 
+   if (valid)
+   {
+
+   }
+   else
+      disconnect();
 }
 
 ///Private

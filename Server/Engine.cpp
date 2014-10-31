@@ -46,12 +46,45 @@ void Engine::loadEvents()
 ///Temporary
 void comOnline(string identifier, Command::values_t values)
 {
-   Console::Print("List clients");
+   Clients::clients_t clients = Clients::Get().getAll();
+   int widthClientId = 8, widthUniqueId = 10, widthUsername = 32, widthPing = 8, widthIpAddress = 16;
+
+   Console::Print("Clients Online: %i", clients.size());
+
+   if (clients.size() > 0) //Only print table if a player is online
+   {
+      //Header
+      cout << stringPadding("CID", widthClientId)
+           << stringPadding("UID", widthUniqueId)
+           << stringPadding("Username", widthUsername)
+           << stringPadding("Ping", widthPing)
+           << stringPadding("Address", widthIpAddress)
+           << endl;
+
+      //Body
+      for(Client* client: clients)
+      {
+         cout << stringPadding(to_string(client->getId()), widthClientId)
+              << stringPadding("0", widthUniqueId)
+              << stringPadding(client->getUsername(), widthUsername)
+              << stringPadding("0", widthPing)
+              << stringPadding(client->getIpAddress(), widthIpAddress)
+              << endl;
+      }
+   }
+}
+
+void comKick(string identifier, Command::values_t values)
+{
+   Client* client = Clients::Get().findByString(values[0], values[1]);
+   if (client)
+      client->kick(values[2]);
 }
 
 void Engine::loadCommands()
 {
    BaseEngine::loadCommands();
 
-   Console.commands.create("online", comOnline, 0, 0);
+   Console.commands.create("online", comOnline, 0, 0).addAlias("status");
+   Console.commands.create("kick", comKick, 2, 3);
 }

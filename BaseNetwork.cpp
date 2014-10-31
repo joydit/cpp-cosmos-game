@@ -1,3 +1,4 @@
+#include <Config.h>
 #include "BaseNetwork.h"
 #include "Shared/Client.h"
 
@@ -6,8 +7,8 @@ using namespace std;
 ///Public
 BaseNetwork::BaseNetwork()
 {
-   setPortTcp(PORT_TCP_DEFAULT);
-   setPortUdp(PORT_UDP_DEFAULT);
+   setPortTcp(Config::Get().settings.get("network", "portTcp", 27015));
+   setPortUdp(Config::Get().settings.get("network", "portUdp", 27015));
 }
 
 void BaseNetwork::setPortTcp(port_t portTcp)

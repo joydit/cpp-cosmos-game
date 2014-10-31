@@ -31,8 +31,7 @@ bool Commands::run(string line)
       Command& command = **it;
       if (command.canCall(values.size()))
       {
-         command.call(values);
-         Console::Print("Command Executed: %s", identifier.c_str());
+         command.call(identifier, values);
          return true;
       }
       else
