@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <Console.h>
 #include "BaseEngine.h"
 #include "Shared/Engine.h"

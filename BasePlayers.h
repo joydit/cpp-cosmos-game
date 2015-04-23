@@ -5,6 +5,7 @@
 #pragma once
 
 #include <list>
+#include <functional>
 #include "BasePlayer.h"
 
 class Player;
