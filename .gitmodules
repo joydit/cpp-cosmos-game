@@ -1,0 +1,6 @@
+[submodule "cpp-event-system"]
+  path = ExtLibs/cpp-event-system
+  url = git://github.com/Turbine1991/cpp-event-system.git
+[submodule "cpp-feather-ini-parser"]
+  path = ExtLibs/cpp-feather-ini-parser
+  url = git://github.com/Turbine1991/cpp-feather-ini-parser.git
