@@ -61,12 +61,29 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Linker>
+					<Add option="-lpthread" />
 					<Add library="sfml-audio" />
 					<Add library="sfml-graphics" />
 					<Add library="sfml-network" />
 					<Add library="sfml-window" />
 					<Add library="sfml-system" />
 					<Add directory="../../lib/sfml/gcc/x64/shared" />
+				</Linker>
+			</Target>
+			<Target title="Linux_Shared_x86">
+				<Option platforms="Unix;" />
+				<Option output="bin/client_shared_x86" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/linux/shared/x86/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Linker>
+					<Add option="-lpthread" />
+					<Add library="sfml-audio" />
+					<Add library="sfml-graphics" />
+					<Add library="sfml-network" />
+					<Add library="sfml-window" />
+					<Add library="sfml-system" />
+					<Add directory="../../lib/sfml/gcc/x86/shared" />
 				</Linker>
 			</Target>
 		</Build>
