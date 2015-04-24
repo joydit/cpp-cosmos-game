@@ -17,6 +17,7 @@
 					<Add option="-w" />
 				</Compiler>
 				<Linker>
+					<Add option="-lws2_32" />
 					<Add library="sfml-audio" />
 					<Add library="sfml-graphics" />
 					<Add library="sfml-network" />
@@ -39,6 +40,7 @@
 					<Add directory="../../sfml/extlibs/headers" />
 				</Compiler>
 				<Linker>
+					<Add option="-lws2_32" />
 					<Add library="sfml-audio-s" />
 					<Add library="sfml-graphics-s" />
 					<Add library="sfml-network-s" />
@@ -171,6 +173,8 @@
 		<Unit filename="Player.h" />
 		<Unit filename="Players.cpp" />
 		<Unit filename="Players.h" />
+		<Unit filename="ReusableTcpListener.cpp" />
+		<Unit filename="ReusableTcpListener.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

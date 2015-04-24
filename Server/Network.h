@@ -3,6 +3,7 @@
 #include <thread>
 #include <Singleton.h>
 #include "../BaseNetwork.h"
+#include "ReusableTcpListener.h"
 #include "Client.h"
 
 class Clients;
@@ -12,7 +13,7 @@ class Network: public BaseNetwork, public Singleton<Network>
    friend class Clients;
 
 public:
-   typedef sf::TcpListener tcp_listener_t;
+   typedef ReusableTcpListener tcp_listener_t;
    typedef sf::SocketSelector selector_t;
    typedef uint8_t socketselector_id_t; //Threaded socket selectors enabling player counts higher than the 1024 Linux limit
 

@@ -22,6 +22,7 @@ Network::Network(): running(false)
 Network::~Network()
 {
    selector.clear();
+   listener.free();
 }
 
 void Network::startThread()
